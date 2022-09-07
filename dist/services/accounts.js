@@ -8,11 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const Accounts = require("../models/accounts");
+const moment_1 = __importDefault(require("moment"));
+const accounts_1 = __importDefault(require("../models/accounts"));
 const saveAccount = ({ userId, accountId, accountDetails }) => __awaiter(void 0, void 0, void 0, function* () {
     const { meta, account } = accountDetails;
-    return yield Accounts.create({
+    return yield accounts_1.default.create({
         userId,
         accountId,
         dataStatus: meta.data_status,
@@ -25,11 +29,12 @@ const saveAccount = ({ userId, accountId, accountDetails }) => __awaiter(void 0,
         bvn: account.bvn,
         bankName: account.institution.name,
         bankCode: account.institution.bankCode,
-        bankType: account.institution.type
+        bankType: account.institution.type,
+        dateLinked: (0, moment_1.default)()
     });
 });
 const getLinkedAccounts = ({ userId, paginatedData }) => __awaiter(void 0, void 0, void 0, function* () {
-    const userAccounts = yield Accounts.paginate({
+    const userAccounts = yield accounts_1.default.paginate({
         userId,
         isLinked: true
     }, paginatedData);
@@ -41,16 +46,20 @@ const getLinkedAccounts = ({ userId, paginatedData }) => __awaiter(void 0, void 
         content: docs,
     };
 });
-const updateAccount = ({ _id, update }) => {
-    return Accounts.findOneAndUpdate({ _id }, {
+const updateAccount = ({ _id, update }) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield accounts_1.default.findOneAndUpdate({ _id }, {
         $set: Object.assign({}, update)
     }, {
         new: true
     });
-};
+});
+const getAccountDetails = (accountId) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield accounts_1.default.findOne({ accountId });
+});
 const accountsService = {
     saveAccount,
     getLinkedAccounts,
-    updateAccount
+    updateAccount,
+    getAccountDetails
 };
 exports.default = accountsService;

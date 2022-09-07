@@ -54,15 +54,19 @@ const getAccountTransactions = async (req: Request, res: Response) => {
 
   const paginatedData = Utils.getPagination(Number(page), Number(size))
 
-  const { limit, offset } = paginatedData
 
   try {
-    const transactions = await monoService.getCustomerAccountTransactions({ id: accountId, paginatedData: { page: offset, limit } })
+    const accountDetails = await accountsService.getAccountDetails(accountId)
+
+    const transactions = await monoService.getCustomerAccountTransactions({ id: accountId, paginatedData: { page: paginatedData.page, limit: paginatedData.limit } })
 
     return res.status(200).send({
       success: true,
       message: 'List of account transactions',
-      data: transactions
+      data: {
+        ...transactions,
+        accountDetails
+      }
     })
 
   } catch (error) {
@@ -88,7 +92,6 @@ const unLinkAccount = async (req: Request, res: Response) => {
     })
 
   } catch (error) {
-    console.log(error)
     Utils.handleError(res, error)
   }
 }

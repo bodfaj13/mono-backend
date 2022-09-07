@@ -588,6 +588,14 @@ const swaggerDocument = {
                               }
                             }
                           }
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "accountDetails": {
+                              "$ref": "#/components/schemas/Account"
+                            }
+                          }
                         }
                       ]
                     }

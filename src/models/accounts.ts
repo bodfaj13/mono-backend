@@ -1,6 +1,25 @@
 import mongoose from '../config/mongoose';
 import paginate from 'mongoose-paginate-v2';
+import { userInterface } from './users';
 const Schema = mongoose.Schema;
+
+export interface accountInterface extends mongoose.Document {
+  userId: userInterface['_id'],
+  accountId: string,
+  isLinked: boolean,
+  dataStatus: string,
+  authMethod: string,
+  accountName: string,
+  currency: string,
+  accountType: string,
+  accountNumber: string,
+  balance: number,
+  bvn: string,
+  bankName: string,
+  bankCode: string,
+  bankType: string,
+  dateLinked: number
+}
 
 const accountSchema = new mongoose.Schema({
   userId: {
@@ -28,6 +47,9 @@ const accountSchema = new mongoose.Schema({
 
 accountSchema.plugin(paginate);
 
-const Accounts: any = mongoose.model('accounts', accountSchema);
+const Accounts = mongoose.model<
+  userInterface,
+  mongoose.PaginateModel<userInterface>
+>('Accounts', accountSchema, 'accounts');
 
 export default Accounts;

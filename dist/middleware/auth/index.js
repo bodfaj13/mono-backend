@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const users_1 = __importDefault(require("../../services/users"));
 const createTokens = (data) => {
+    data.password = undefined;
     const token = jsonwebtoken_1.default.sign({ data }, process.env.JWT_SECRET || '');
     const refreshToken = jsonwebtoken_1.default.sign({ data }, process.env.JWT_SECRET || '');
     return {

@@ -26,8 +26,9 @@ const accountSchema = new mongoose_1.default.Schema({
     bvn: String,
     bankName: String,
     bankCode: String,
-    bankType: String
+    bankType: String,
+    dateLinked: Number
 });
 accountSchema.plugin(mongoose_paginate_v2_1.default);
-const Accounts = mongoose_1.default.model('accounts', accountSchema);
-module.exports = Accounts;
+const Accounts = mongoose_1.default.model('Accounts', accountSchema, 'accounts');
+exports.default = Accounts;

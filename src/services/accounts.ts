@@ -24,8 +24,6 @@ const saveAccount = async ({ userId, accountId, accountDetails }: saveAccountInt
 }
 
 const getLinkedAccounts = async ({ userId, paginatedData }: getLinkedAccountsInterface) => {
-  console.log(paginatedData)
-
   const userAccounts = await Accounts.paginate({
     userId,
     isLinked: true
@@ -42,9 +40,9 @@ const getLinkedAccounts = async ({ userId, paginatedData }: getLinkedAccountsInt
   }
 }
 
-const updateAccount = ({ _id, update }: DocumentUpdate) => {
+const updateAccount = async ({ _id, update }: DocumentUpdate) => {
 
-  return Accounts.findOneAndUpdate({ _id }, {
+  return await Accounts.findOneAndUpdate({ _id }, {
     $set: {
       ...update
     }
@@ -53,10 +51,15 @@ const updateAccount = ({ _id, update }: DocumentUpdate) => {
   })
 }
 
+const getAccountDetails = async (accountId: string) => {
+  return await Accounts.findOne({ accountId })
+}
+
 const accountsService = {
   saveAccount,
   getLinkedAccounts,
-  updateAccount
+  updateAccount,
+  getAccountDetails
 }
 
 export default accountsService

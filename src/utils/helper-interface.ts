@@ -15,12 +15,6 @@ export interface DocumentUpdate {
 }
 
 export interface paginatedData {
-  limit: number,
-  offset: number,
-}
-
-
-export interface paginatedDataApp {
   page: number,
   limit: number,
 }
@@ -38,7 +32,7 @@ export interface saveAccountInterface {
 
 export interface getCustomerAccountTransactionsInterface {
   id: string,
-  paginatedData: paginatedDataApp
+  paginatedData: paginatedData
 }
 
 export interface comparePasswordInterface  {

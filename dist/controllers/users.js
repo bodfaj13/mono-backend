@@ -17,7 +17,7 @@ const users_1 = __importDefault(require("../services/users"));
 const utils_1 = __importDefault(require("../utils"));
 const auth_1 = __importDefault(require("../middleware/auth"));
 const signupUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password } = req.body;
+    const { email, password, firstName, lastName } = req.body;
     try {
         let validationErrors = {};
         const checkEmailAddress = yield users_1.default.checkEmailAddress({ email });
@@ -35,7 +35,7 @@ const signupUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 error: validationErrors
             });
         }
-        yield users_1.default.createUser({ email, password });
+        yield users_1.default.createUser({ email, password, firstName, lastName });
         return res.status(200).send({
             success: true,
             message: 'User created successfully',
@@ -48,23 +48,20 @@ const signupUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
-        let validationErrors = {};
         const getUser = yield users_1.default.checkEmailAddress({ email });
         if (getUser === null) {
-            validationErrors.email = 'Email not found';
             return res.status(400).send({
                 success: false,
-                message: 'Authentication failed',
-                error: validationErrors
+                message: 'Invalid email or password',
+                error: {}
             });
         }
         const comparePassword = yield users_1.default.comparePassword({ password, hashedPassword: getUser.password });
         if (!comparePassword) {
-            validationErrors.password = 'Password not valid';
             return res.status(400).send({
                 success: false,
-                message: 'Authentication failed',
-                error: validationErrors
+                message: 'Invalid email or password',
+                error: {}
             });
         }
         if (getUser.isActive !== true) {
@@ -74,16 +71,18 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 error: {}
             });
         }
-        delete getUser.password;
         const tokens = auth_1.default.createTokens(getUser);
         return res.status(200).send({
             success: true,
             message: 'User authenticated successfully',
-            token: tokens.token,
-            refreshToken: tokens.refreshToken
+            data: {
+                token: tokens.token,
+                refreshToken: tokens.refreshToken
+            }
         });
     }
     catch (error) {
+        console.log(error);
         utils_1.default.handleError(res, error);
     }
 });

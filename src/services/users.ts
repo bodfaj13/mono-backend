@@ -20,9 +20,9 @@ const getUserById = async ({ id }: { id: string }) => {
   return await Users.findOne({ _id: id });
 }
 
-const updateUser = ({ _id, update }: DocumentUpdate) => {
+const updateUser = async ({ _id, update }: DocumentUpdate) => {
 
-  return Users.findOneAndUpdate({ _id }, {
+  return await Users.findOneAndUpdate({ _id }, {
     $set: {
       ...update
     }

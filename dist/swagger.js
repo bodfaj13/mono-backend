@@ -86,6 +86,12 @@ const swaggerDocument = {
                     "_id": {
                         "type": "string"
                     },
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
                     "email": {
                         "type": "string"
                     }
@@ -183,6 +189,12 @@ const swaggerDocument = {
                         "application/json": {
                             "schema": {
                                 "properties": {
+                                    "firstName": {
+                                        "type": "string"
+                                    },
+                                    "lastName": {
+                                        "type": "string"
+                                    },
                                     "email": {
                                         "type": "string"
                                     },
@@ -254,8 +266,16 @@ const swaggerDocument = {
                                         {
                                             "type": "object",
                                             "properties": {
-                                                "token": {
-                                                    "type": "string",
+                                                "data": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "token": {
+                                                            "type": "string"
+                                                        },
+                                                        "refreshToken": {
+                                                            "type": "string"
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
@@ -526,6 +546,14 @@ const swaggerDocument = {
                                                             "items": {
                                                                 "$ref": "#/components/schemas/Transaction"
                                                             }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "accountDetails": {
+                                                            "$ref": "#/components/schemas/Account"
                                                         }
                                                     }
                                                 }

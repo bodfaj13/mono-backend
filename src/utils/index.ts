@@ -34,10 +34,9 @@ const handleError = (res: Response, error: any) => {
 }
 
 const getPagination = (page: number | undefined, size: number | undefined) => {
-  console.log(page, size)
   const limit = size ? size : 10;
   const offset = page ? page : 1;
-  return { limit, offset };
+  return { limit, page: offset };
 }
 
 const Utils = {

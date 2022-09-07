@@ -55,13 +55,13 @@ const getAccountTransactions = (req, res) => __awaiter(void 0, void 0, void 0, f
     const { page, size } = req.query;
     const { accountId } = req.params;
     const paginatedData = utils_1.default.getPagination(Number(page), Number(size));
-    const { limit, offset } = paginatedData;
     try {
-        const transactions = yield mono_1.default.getCustomerAccountTransactions({ id: accountId, paginatedData: { page: offset, limit } });
+        const accountDetails = yield accounts_1.default.getAccountDetails(accountId);
+        const transactions = yield mono_1.default.getCustomerAccountTransactions({ id: accountId, paginatedData: { page: paginatedData.page, limit: paginatedData.limit } });
         return res.status(200).send({
             success: true,
             message: 'List of account transactions',
-            data: transactions
+            data: Object.assign(Object.assign({}, transactions), { accountDetails })
         });
     }
     catch (error) {
@@ -83,7 +83,6 @@ const unLinkAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
     }
     catch (error) {
-        console.log(error);
         utils_1.default.handleError(res, error);
     }
 });
