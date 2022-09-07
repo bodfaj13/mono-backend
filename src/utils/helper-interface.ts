@@ -14,6 +14,11 @@ export interface DocumentUpdate {
   update: DocumentUpdateObject
 }
 
+export interface updateAccountByAccountIdInterface {
+  accountId: string,
+  update: DocumentUpdateObject
+}
+
 export interface paginatedData {
   page: number,
   limit: number,

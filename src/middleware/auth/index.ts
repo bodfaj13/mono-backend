@@ -1,7 +1,6 @@
 import { Response, Request, NextFunction } from 'express';
 import jwt from 'jsonwebtoken'
 import usersService from '../../services/users'
-import { Usermodel } from '../../utils/helper-interface';
 
 
 const createTokens = (data: any) => {

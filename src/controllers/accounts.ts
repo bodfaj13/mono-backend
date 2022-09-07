@@ -2,6 +2,19 @@ import { Response, Request } from 'express';
 import accountsService from "../services/accounts"
 import monoService from "../services/mono"
 import Utils from "../utils"
+import cron from 'node-cron'
+import { accountInterface } from '../models/accounts';
+
+cron.schedule('0 */3 * * *', async () => {
+  const allAccounts: any = await accountsService.getAllAccounts()
+
+  for (let index = 0; index < allAccounts.length; index++) {
+    const accountId = allAccounts[index].accountId
+
+    await monoService.manualDataSync({ accountId })
+  }
+})
+
 
 const linkAccount = async (req: Request, res: Response) => {
   const { code } = req.body
@@ -96,12 +109,57 @@ const unLinkAccount = async (req: Request, res: Response) => {
   }
 }
 
+const monoWebHook = async (req: Request, res: Response) => {
+  const { event, data } = req.body;
+
+  const accountId = data.account._id
+
+  switch (event) {
+    case 'mono.events.reauthorisation_required':
+
+      const reauthorisationToken = await monoService.accountReauthToken({ accountId })
+
+      await accountsService.updateAccountByAccountId({
+        accountId,
+        update: {
+          "reauthorisationToken": reauthorisationToken,
+          "reauthorisationRequired": true,
+        }
+      })
+      break;
+
+    case 'mono.events.account_reauthorized':
+      console.log('bank to base')
+      await accountsService.updateAccountByAccountId({
+        accountId,
+        update: {
+          "reauthorisationToken": '',
+          "reauthorisationRequired": false,
+        }
+      })
+      break;
+
+    case 'mono.events.account_updated':
+      await accountsService.updateAccountByAccountId({
+        accountId,
+        update: {
+          "dataStatus": data.meta.data_status,
+          "balance": data.account.balance,
+        }
+      })
+      break;
+  }
+
+  return res.sendStatus(200);
+}
+
 
 const accountsController = {
   linkAccount,
   getLinkedAccounts,
   getAccountTransactions,
-  unLinkAccount
+  unLinkAccount,
+  monoWebHook
 }
 
 export default accountsController

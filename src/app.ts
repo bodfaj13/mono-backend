@@ -40,6 +40,7 @@ app.set('view engine', 'html');
 app.use(express.static(path.join(__dirname, '../public')));
 
 app.use('/', indexRouter);
+
 app.use('/api/users', usersRouter);
 app.use('/api/accounts', accountsRouter);
 

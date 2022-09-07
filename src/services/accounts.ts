@@ -1,4 +1,4 @@
-import { DocumentUpdate, getLinkedAccountsInterface, saveAccountInterface } from "../utils/helper-interface";
+import { DocumentUpdate, getLinkedAccountsInterface, saveAccountInterface, updateAccountByAccountIdInterface } from "../utils/helper-interface";
 import moment from "moment"
 import Accounts from "../models/accounts";
 
@@ -51,15 +51,32 @@ const updateAccount = async ({ _id, update }: DocumentUpdate) => {
   })
 }
 
+const updateAccountByAccountId = async ({ accountId, update }: updateAccountByAccountIdInterface) => {
+
+  return await Accounts.findOneAndUpdate({ accountId }, {
+    $set: {
+      ...update
+    }
+  }, {
+    new: true
+  })
+}
+
 const getAccountDetails = async (accountId: string) => {
   return await Accounts.findOne({ accountId })
+}
+
+const getAllAccounts = async () => {
+  return await Accounts.find({ isLinked: true })
 }
 
 const accountsService = {
   saveAccount,
   getLinkedAccounts,
   updateAccount,
-  getAccountDetails
+  getAccountDetails,
+  getAllAccounts,
+  updateAccountByAccountId
 }
 
 export default accountsService

@@ -27,7 +27,12 @@ const accountSchema = new mongoose_1.default.Schema({
     bankName: String,
     bankCode: String,
     bankType: String,
-    dateLinked: Number
+    dateLinked: Number,
+    reauthorisationRequired: {
+        type: Boolean,
+        default: false
+    },
+    reauthorisationToken: String,
 });
 accountSchema.plugin(mongoose_paginate_v2_1.default);
 const Accounts = mongoose_1.default.model('Accounts', accountSchema, 'accounts');

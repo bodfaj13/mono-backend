@@ -68,11 +68,38 @@ const unLinkCustomerAccount = async ({ accountId }: {
   })
 }
 
+const manualDataSync = async ({ accountId }: {
+  accountId: string
+}) => {
+  return await axios.post(`${monoURL}/accounts/${accountId}/sync`, {}, {
+    headers: {
+      'Content-Type': 'application/json',
+      'mono-sec-key': process.env.MONO_SECRET_KEY
+    }
+  })
+}
+
+const accountReauthToken = async ({ accountId }: { accountId: string }) => {
+  const res = await axios.post(`${monoURL}/accounts/${accountId}/reauthorise`, {}, {
+    headers: {
+      'Content-Type': 'application/json',
+      'mono-sec-key': process.env.MONO_SECRET_KEY
+    }
+  })
+
+  const { token } = res.data
+
+  return token
+}
+
+
 const monoService = {
   getCustomerAccountId,
   getCustomerAccountDetails,
   getCustomerAccountTransactions,
-  unLinkCustomerAccount
+  unLinkCustomerAccount,
+  manualDataSync,
+  accountReauthToken
 }
 
 export default monoService

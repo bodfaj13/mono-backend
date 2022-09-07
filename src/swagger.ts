@@ -150,6 +150,15 @@ const swaggerDocument = {
           "bankType": {
             "type": "string"
           },
+          "dateLinked": {
+            "type": "number"
+          },
+          "reauthorisationRequired": {
+            "type": "boolean"
+          },
+          "reauthorisationToken": {
+            "type": "string"
+          }
         }
       },
 

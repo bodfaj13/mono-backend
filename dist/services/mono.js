@@ -58,10 +58,30 @@ const unLinkCustomerAccount = ({ accountId }) => __awaiter(void 0, void 0, void 
         }
     });
 });
+const manualDataSync = ({ accountId }) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield axios.post(`${monoURL}/accounts/${accountId}/sync`, {}, {
+        headers: {
+            'Content-Type': 'application/json',
+            'mono-sec-key': process.env.MONO_SECRET_KEY
+        }
+    });
+});
+const accountReauthToken = ({ accountId }) => __awaiter(void 0, void 0, void 0, function* () {
+    const res = yield axios.post(`${monoURL}/accounts/${accountId}/reauthorise`, {}, {
+        headers: {
+            'Content-Type': 'application/json',
+            'mono-sec-key': process.env.MONO_SECRET_KEY
+        }
+    });
+    const { token } = res.data;
+    return token;
+});
 const monoService = {
     getCustomerAccountId,
     getCustomerAccountDetails,
     getCustomerAccountTransactions,
-    unLinkCustomerAccount
+    unLinkCustomerAccount,
+    manualDataSync,
+    accountReauthToken
 };
 exports.default = monoService;

@@ -18,7 +18,9 @@ export interface accountInterface extends mongoose.Document {
   bankName: string,
   bankCode: string,
   bankType: string,
-  dateLinked: number
+  dateLinked: number,
+  reauthorisationRequired: boolean,
+  reauthorisationToken: string,
 }
 
 const accountSchema = new mongoose.Schema({
@@ -42,7 +44,12 @@ const accountSchema = new mongoose.Schema({
   bankName: String,
   bankCode: String,
   bankType: String,
-  dateLinked: Number
+  dateLinked: Number,
+  reauthorisationRequired: {
+    type: Boolean,
+    default: false
+  },
+  reauthorisationToken: String,
 });
 
 accountSchema.plugin(paginate);

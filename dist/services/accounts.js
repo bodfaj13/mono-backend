@@ -53,13 +53,25 @@ const updateAccount = ({ _id, update }) => __awaiter(void 0, void 0, void 0, fun
         new: true
     });
 });
+const updateAccountByAccountId = ({ accountId, update }) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield accounts_1.default.findOneAndUpdate({ accountId }, {
+        $set: Object.assign({}, update)
+    }, {
+        new: true
+    });
+});
 const getAccountDetails = (accountId) => __awaiter(void 0, void 0, void 0, function* () {
     return yield accounts_1.default.findOne({ accountId });
+});
+const getAllAccounts = () => __awaiter(void 0, void 0, void 0, function* () {
+    return yield accounts_1.default.find({ isLinked: true });
 });
 const accountsService = {
     saveAccount,
     getLinkedAccounts,
     updateAccount,
-    getAccountDetails
+    getAccountDetails,
+    getAllAccounts,
+    updateAccountByAccountId
 };
 exports.default = accountsService;

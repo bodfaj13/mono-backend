@@ -15,6 +15,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const accounts_1 = __importDefault(require("../services/accounts"));
 const mono_1 = __importDefault(require("../services/mono"));
 const utils_1 = __importDefault(require("../utils"));
+const node_cron_1 = __importDefault(require("node-cron"));
+node_cron_1.default.schedule('0 */3 * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+    const allAccounts = yield accounts_1.default.getAllAccounts();
+    for (let index = 0; index < allAccounts.length; index++) {
+        const accountId = allAccounts[index].accountId;
+        yield mono_1.default.manualDataSync({ accountId });
+    }
+}));
 const linkAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { code } = req.body;
     const { _id } = req.user;
@@ -86,10 +94,47 @@ const unLinkAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         utils_1.default.handleError(res, error);
     }
 });
+const monoWebHook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { event, data } = req.body;
+    const accountId = data.account._id;
+    switch (event) {
+        case 'mono.events.reauthorisation_required':
+            const reauthorisationToken = yield mono_1.default.accountReauthToken({ accountId });
+            yield accounts_1.default.updateAccountByAccountId({
+                accountId,
+                update: {
+                    "reauthorisationToken": reauthorisationToken,
+                    "reauthorisationRequired": true,
+                }
+            });
+            break;
+        case 'mono.events.account_reauthorized':
+            console.log('bank to base');
+            yield accounts_1.default.updateAccountByAccountId({
+                accountId,
+                update: {
+                    "reauthorisationToken": '',
+                    "reauthorisationRequired": false,
+                }
+            });
+            break;
+        case 'mono.events.account_updated':
+            yield accounts_1.default.updateAccountByAccountId({
+                accountId,
+                update: {
+                    "dataStatus": data.meta.data_status,
+                    "balance": data.account.balance,
+                }
+            });
+            break;
+    }
+    return res.sendStatus(200);
+});
 const accountsController = {
     linkAccount,
     getLinkedAccounts,
     getAccountTransactions,
-    unLinkAccount
+    unLinkAccount,
+    monoWebHook
 };
 exports.default = accountsController;
